@@ -1,0 +1,164 @@
+/* ========================================
+   GLOBAL STYLES
+   ======================================== */
+:root {
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: #753a88;
+}
+
+/* ========================================
+   ICON STYLES
+   ======================================== */
+.paw-icon {
+    font-size: 1.15rem;
+    color: #4B5563;
+}
+
+/* ========================================
+   CARD STYLES
+   ======================================== */
+.metric-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border: 1px solid rgba(249, 115, 22, 0.3);
+    transition: all 0.3s;
+}
+
+.metric-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    border-color: #f97316;
+}
+
+.metric-value {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: #212529;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6B7280;
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+}
+
+.category-card {
+    border: 2px dashed #93C5FD;
+    transition: all 0.2s;
+}
+
+.category-card:hover {
+    border-color: #3B82F6;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+.pet-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    transition: all 0.3s;
+    background-color: white;
+}
+
+.pet-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.pet-image {
+    width: 100%;
+    height: 11rem; /* 44 * 0.25rem = 11rem */
+    object-fit: cover;
+    object-position: center;
+}
+
+/* ========================================
+   TOGGLE SWITCH STYLES
+   ======================================== */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #f97316;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* ========================================
+   STEP INDICATOR STYLES
+   ======================================== */
+.step-active-circle {
+    width: 2.5rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+}
+
+/* ========================================
+   FORM INPUT STYLES
+   ======================================== */
+.filter-input-group {
+    display: flex;
+    align-items: center;
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s;
+}
+
+.filter-input-group:focus-within {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+    --tw-ring-color: #a855f7;
+    border-color: #a855f7;
+}

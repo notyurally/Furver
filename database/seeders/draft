@@ -1,0 +1,94 @@
+
+class PetTypesSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $types = ['Dog', 'Cat'];
+        
+        foreach ($types as $type) {
+            PetTypes::create(['name' => $type]);
+        }
+    }
+}
+
+
+class DatabaseSeeder extends Seeder
+{
+    use WithoutModelEvents;
+
+    /**
+     * Seed the application's database.
+     */
+    public function run(): void
+    {
+        // User::factory(10)->create();
+
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+        ]);
+       $this->call([
+        PetTypesSeeder::class,
+        BreedSeeder::class,  ]);
+    }
+}
+
+
+
+class BreedSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $dog = PetTypes::where('name', 'Dog')->first();
+        $cat = PetTypes::where('name', 'Cat')->first();
+
+        $dogBreeds = [
+            'Labrador Retriever','Golden Retriever','German Shepherd', 'Bulldog', 'Beagle', 'Poodle', 'Aspin','Siberian Husky', 'Shih Tzu',
+            'Chihuahua', 'Pug', 'Doberman', 'Rottweiler', 'Border Collie', 'Dalmatian', 'Corgi', 'Boxer', 'Great Dane', 'Pitbull', 'French Bulldog',
+            'Cocker Spaniel','Yorkshire Terrier','Maltese', 'Shiba Inu','Saint Bernard','Akita','Australian Shepherd','Boston Terrier','Basset Hound',
+            'Greyhound', 'Weimaraner', 'Aspin',
+
+            // Small Breeds
+            'Papillon','Pomeranian','Miniature Pinscher','Havanese','Italian Greyhound','Toy Poodle','Jack Russell Terrier','Cavalier King Charles Spaniel',
+
+            // Medium Breeds
+            'Bull Terrier','Whippet','English Springer Spaniel','Brittany Spaniel','American Eskimo Dog','Keeshond','Samoyed','Australian Cattle Dog',
+
+            // Large Breeds
+            'Alaskan Malamute','Bernese Mountain Dog','Newfoundland','Irish Setter','German Shorthaired Pointer','Belgian Malinois','Rhodesian Ridgeback','Chow Chow',
+
+            // Working / Guard Dogs
+            'Cane Corso','Bullmastiff','Anatolian Shepherd','Great Pyrenees','Tibetan Mastiff','Kuvasz','Boerboel',
+
+            // Hound Breeds
+            'Bloodhound','Afghan Hound','Basenji','Dachshund','Harrier','Norwegian Elkhound',
+
+            // Terrier Breeds
+            'Airedale Terrier','West Highland White Terrier','Scottish Terrier','Fox Terrier','Border Terrier','Staffordshire Bull Terrier',
+
+            // Hypoallergenic Breeds
+            'Bichon Frise','Portuguese Water Dog','Soft Coated Wheaten Terrier','Chinese Crested Dog','Lhasa Apso','Schnauzer (Mini/Standard/Giant)',
+
+            // Rare Breeds
+            'Xoloitzcuintli','Thai Ridgeback','Azawakh','Kangal','Lagotto Romagnolo','Saluki','Borzoi','Icelandic Sheepdog','Finnish Spitz','Leonberger'
+        ];
+        
+        foreach ($dogBreeds as $breed) {
+            Breed::create(['pet_types_id' => $dog->id, 'name' => $breed]);
+        }
+
+        // Cat breeds
+        $catBreeds = ['Persian', 'Siamese', 'Maine Coon', 'British Shorthair', 'Ragdoll', 'Puspin'];
+        foreach ($catBreeds as $breed) {
+            Breed::create(['pet_types_id' => $cat->id, 'name' => $breed]);
+        }
+    }
+}
+
+

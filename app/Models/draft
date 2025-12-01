@@ -1,0 +1,337 @@
+class AdoptionApplication extends Model
+{
+    /** @use HasFactory<\Database\Factories\AdoptionApplicationFactory> */
+    use HasFactory;
+
+    protected $fillable = [
+        'user_id',
+        'pet_id',
+        'application_status',
+        'admin_notes'
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function pet()
+    {
+        return $this->belongsTo(Pet::class);
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(Payments::class);
+    }
+
+    public function adoptionHistory()
+    {
+        return $this->hasOne(AdoptionHistory::class);
+    }
+
+}
+
+class AdoptionHistory extends Model
+{
+    /** @use HasFactory<\Database\Factories\AdoptionHistoryFactory> */
+    use HasFactory;
+
+     protected $fillable = [
+        'user_id',
+        'pet_id',
+        'application_id',
+        'adopted_at',
+        'notes'
+    ];
+
+    protected $casts = [
+        'adopted_at' => 'datetime',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function pet()
+    {
+        return $this->belongsTo(Pet::class);
+    }
+
+    public function application()
+    {
+        return $this->belongsTo(AdoptionApplication::class);
+    }
+
+}
+
+class Breed extends Model
+{
+    /** @use HasFactory<\Database\Factories\BreedFactory> */
+    use HasFactory;
+    protected $fillable = ['pet_types_id', 'name'];
+
+    public function petType()
+    {
+        return $this->belongsTo(PetTypes::class, 'pet_types_id');
+    }
+
+    public function pets()
+    {
+        return $this->hasMany(Pet::class);
+    }
+}
+
+
+class DeliverySchedules extends Model
+{
+    /** @use HasFactory<\Database\Factories\DeliverySchedulesFactory> */
+    use HasFactory;
+
+    protected $fillable = [
+        'payment_id',
+        'delivery_date',
+        'delivery_time',
+        'is_delivered'
+    ];
+
+    protected $casts = [
+        'delivery_date' => 'date',
+        'is_delivered' => 'boolean',
+    ];
+
+    public function payment()
+    {
+        return $this->belongsTo(Payments::class);
+    }
+
+}
+
+
+class Payments extends Model
+{
+    /** @use HasFactory<\Database\Factories\PaymentsFactory> */
+    use HasFactory;
+
+    protected $fillable = [
+        'application_id',
+        'method',
+        'payment_method',
+        'receipt_path',
+        'delivery_option',
+        'delivery_fee',
+        'total_amount',
+        'payment_status'
+    ];
+
+    protected $casts = [
+        'delivery_fee' => 'decimal:2',
+        'total_amount' => 'decimal:2',
+    ];
+
+    public function application()
+    {
+        return $this->belongsTo(AdoptionApplication::class);
+    }
+
+    public function deliverySchedule()
+    {
+        return $this->hasOne(DeliverySchedules::class);
+    }
+}
+
+
+class Pet extends Model
+{
+    /** @use HasFactory<\Database\Factories\PetFactory> */
+    use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'breed_id',
+        'pet_sex',
+        'pet_size',
+        'birthdate',
+        'age_years',
+        'age_months',
+        'description',
+        'adoption_fee',
+        'location',
+        'pet_status'
+    ];
+
+    protected $casts = [
+        'birthdate' => 'date',
+        'adoption_fee' => 'decimal:2',
+    ];
+
+    public function breed()
+    {
+        return $this->belongsTo(Breed::class);
+    }
+
+    public function photos()
+    {
+        return $this->hasMany(PetPhoto::class);
+    }
+
+    public function profilePhoto()
+    {
+        return $this->hasOne(PetPhoto::class)->where('is_profile', true);
+    }
+
+    public function health()
+    {
+        return $this->hasOne(PetHealth::class);
+    }
+
+    public function behaviorTraits()
+    {
+        return $this->hasMany(PetBehaviorTraits::class);
+    }
+
+    public function applications()
+    {
+        return $this->hasMany(AdoptionApplication::class);
+    }
+
+    public function adoptionHistory()
+    {
+        return $this->hasOne(AdoptionHistory::class);
+    }
+}
+
+class PetBehaviorTraits extends Model
+{
+    /** @use HasFactory<\Database\Factories\PetBehaviorTraitsFactory> */
+    use HasFactory;
+
+     protected $fillable = [
+        'pet_id',
+        'trait',
+        'notes'
+    ];
+
+    public function pet()
+    {
+        return $this->belongsTo(Pet::class);
+    }
+}
+
+
+class PetHealth extends Model
+{
+    /** @use HasFactory<\Database\Factories\PetHealthFactory> */
+    use HasFactory;
+    protected $fillable = [
+        'pet_id',
+        'is_vaccinated',
+        'last_vaccinated_date',
+        'is_spayed',
+        'last_spay_date',
+        'microchip_number'
+    ];
+
+    protected $casts = [
+        'is_vaccinated' => 'boolean',
+        'is_spayed' => 'boolean',
+        'last_vaccinated_date' => 'date',
+        'last_spay_date' => 'date',
+    ];
+
+    public function pet()
+    {
+        return $this->belongsTo(Pet::class);
+    }
+
+}
+
+class PetPhoto extends Model
+{
+    /** @use HasFactory<\Database\Factories\PetPhotoFactory> */
+    use HasFactory;
+
+    protected $fillable = [
+        'pet_id',
+        'photo_path',
+        'additional_photos',
+        'is_profile'
+    ];
+
+    protected $casts = [
+        'additional_photos' => 'array',
+        'is_profile' => 'boolean',
+    ];
+
+    public function pet()
+    {
+        return $this->belongsTo(Pet::class);
+    }
+}
+
+class PetTypes extends Model
+{
+    /** @use HasFactory<\Database\Factories\PetTypesFactory> */
+    use HasFactory;
+    
+    protected $fillable = ['name'];
+
+    public function breeds()
+    {
+        return $this->hasMany(Breed::class, 'pet_types_id');
+    }
+}
+
+
+class User extends Authenticatable
+{
+    /** @use HasFactory<\Database\Factories\UserFactory> */
+    use HasFactory, Notifiable;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var list<string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed',
+        ];
+        
+    }
+
+    public function adoptionApplications()
+    {
+        return $this->hasMany(AdoptionApplication::class);
+    }
+
+    public function adoptionHistories()
+    {
+        return $this->hasMany(AdoptionHistory::class);
+    }
+}
+
+

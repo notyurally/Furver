@@ -1,0 +1,133 @@
+Schema::create('pet_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 50)->nullable(false);
+            $table->timestamps();
+        });
+
+Schema::create('breeds', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('pet_types_id')->nullable()->constrained();
+            $table->string('name', 255)->nullable(false);
+            $table->timestamps();
+        });
+
+Schema::create('pets', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->foreignId('breed_id')->nullable()->constrained();
+            $table->enum('pet_sex', ['male', 'female']);
+            $table->enum('pet_size', ['small', 'medium', 'large', 'extra_large']);
+            $table->date('birthdate')->nullable();
+            $table->tinyInteger('age_years')->nullable();
+            $table->tinyInteger('age_months')->nullable();
+            $table->text('description')->nullable();
+            $table->decimal('adoption_fee', 10, 2)->nullable();
+            $table->string('location');
+            $table->enum('pet_status', ['available', 'pending', 'adopted']);
+            $table->timestamps();
+        });
+
+Schema::create('pet_photos', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('pet_id')->constrained('pets')->nullable(false);
+            $table->string('photo_path', 1024)->nullable(false)->comment('The path to the main photo.'); 
+            $table->json('additional_photos')->nullable(); 
+            $table->boolean('is_profile')->default(false)->nullable(false);
+            $table->timestamps();
+        });
+
+Schema::create('pet_healths', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('pet_id')->constrained('pets')->nullable(false)->unique(); 
+            $table->boolean('is_vaccinated')->default(false)->nullable(false); 
+            $table->date('last_vaccinated_date')->nullable();
+            $table->boolean('is_spayed')->nullable(); 
+            $table->date('last_spay_date')->nullable();
+            $table->string('microchip_number', 255)->nullable();
+            $table->timestamps();
+        });
+
+        
+ Schema::create('pet_behavior_traits', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('pet_id')->constrained('pets')->nullable(false);
+            
+            $table->string('trait', 128)->nullable(false);
+            $table->text('notes')->nullable();
+
+            $table->timestamps();
+            
+            // Prevent duplicate trait entries for the same pet
+            $table->unique(['pet_id', 'trait']); 
+        });
+
+Schema::create('adoption_applications', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->nullable(false);
+            $table->foreignId('pet_id')->constrained('pets')->nullable(false);
+            
+            $table->enum('application_status', ['Pending', 'Approved', 'Rejected', 'Withdrawn'])->nullable(false);
+
+            $table->text('admin_notes')->nullable();
+
+            $table->timestamps();
+        });
+
+Schema::create('adoption_histories', function (Blueprint $table) {
+            $table->id();
+
+            $table->foreignId('user_id')->constrained('users')->nullable(false);
+            $table->foreignId('pet_id')->constrained('pets')->nullable(false)->unique(); // A pet can only be adopted once
+            $table->foreignId('application_id')->constrained('adoption_applications')->nullable(false)->unique(); // One history record per successful application
+            
+            $table->timestamp('adopted_at')->nullable();
+            $table->text('notes')->nullable();
+            
+            $table->timestamps();
+        });
+
+Schema::create('payments', function (Blueprint $table) {
+            $table->id();
+             $table->foreignId('application_id')->constrained('adoption_applications')->nullable(false);
+            $table->foreignId('application_id')->constrained('adoption_applications')->nullable(false);
+            
+            // Based on ERD: method varchar(255) NN and payment_method_E (Enum) NN
+            $table->string('method', 255)->nullable(false); 
+            $table->enum('payment_method', ['CreditCard', 'Cash', 'Transfer'])->nullable(false);
+            
+            $table->string('receipt_path', 1024)->nullable(); 
+            
+            $table->enum('delivery_option', ['Pickup', 'Delivery'])->nullable(false);
+
+            $table->decimal('delivery_fee', 10, 2)->default(0.00)->nullable(false); 
+            $table->decimal('total_amount', 10, 2)->nullable(false); 
+            
+            $table->enum('payment_status', ['Pending', 'Paid', 'Failed', 'Refunded'])->nullable(false);
+
+            // Based on ERD: method varchar(255) NN and payment_method_E (Enum) NN
+            $table->string('method', 255)->nullable(false); 
+            $table->enum('payment_method', ['CreditCard', 'Cash', 'Transfer'])->nullable(false);
+            
+            $table->string('receipt_path', 1024)->nullable(); 
+            
+            $table->enum('delivery_option', ['Pickup', 'Delivery'])->nullable(false);
+
+            $table->decimal('delivery_fee', 10, 2)->default(0.00)->nullable(false); 
+            $table->decimal('total_amount', 10, 2)->nullable(false); 
+            
+            $table->enum('payment_status', ['Pending', 'Paid', 'Failed', 'Refunded'])->nullable(false);
+            $table->timestamps();
+        });
+
+
+Schema::create('delivery_schedules', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('payment_id')->constrained('payments')->nullable(false)->unique();
+            
+            $table->date('delivery_date')->nullable(false);
+            $table->time('delivery_time')->nullable();
+            
+            $table->boolean('is_delivered')->default(false)->nullable(false);
+            $table->timestamps();
+        });
+
